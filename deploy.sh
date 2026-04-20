@@ -13,9 +13,9 @@ if ! ssh rpi5 'docker network inspect shared-db-net' > /dev/null 2>&1; then
   exit 1
 fi
 
-RSYNC_EXTRA=""
+EXCLUDE_ENV="--exclude=.env"
 if [ "$1" = "--with-env" ]; then
-  RSYNC_EXTRA="--include=.env"
+  EXCLUDE_ENV=""
 fi
 
 echo "Syncing files to Pi..."
@@ -23,8 +23,7 @@ rsync -avz --delete \
   --exclude='.git' \
   --exclude='backups/' \
   --exclude='.DS_Store' \
-  --exclude='.env' \
-  $RSYNC_EXTRA \
+  $EXCLUDE_ENV \
   . airlangga@rpi5:/home/airlangga/apps/shared-db/
 
 echo "Starting stack on Pi..."
